@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:search_banks/models/bank_branch_model.dart';
-import 'package:search_banks/models/favourite_branches.dart';
+
+import '../models/favourite_branches.dart';
 
 class BankBranchFavourite extends StatefulWidget {
   final String bankIfscCode;
@@ -15,18 +15,23 @@ class BankBranchFavourite extends StatefulWidget {
 class _BankBranchFavouriteState extends State<BankBranchFavourite> {
   @override
   Widget build(BuildContext context) {
-    FavouriteBranches _favBranches = Provider.of<FavouriteBranches>(context, listen: false);
+    FavouriteBranchesManager _favBranches =
+        Provider.of<FavouriteBranchesManager>(context, listen: false);
+    bool isFavourite = binarySearch(_favBranches.favouriteBranches, widget.bankIfscCode) != -1;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(8),
-        child: IconButton(
-          icon: binarySearch(_favBranches.favouriteBranches, widget.bankIfscCode) != -1
-              ? Icon(Icons.star_rate_rounded, color: Colors.yellow)
-              : Icon(Icons.star_outline_rounded, color: Colors.grey),
-          onPressed: () {
-            _favBranches.toggleFavouriteState(widget.bankIfscCode);
-            setState(() {});
-          },
+        child: Tooltip(
+          message: isFavourite ? 'Remove from favourites' : 'Add to favourites',
+          child: IconButton(
+            icon: isFavourite
+                ? Icon(Icons.star_rate_rounded, color: Colors.yellow)
+                : Icon(Icons.star_outline_rounded, color: Colors.grey),
+            onPressed: () {
+              _favBranches.toggleFavouriteState(widget.bankIfscCode);
+              setState(() {});
+            },
+          ),
         ),
       ),
     );

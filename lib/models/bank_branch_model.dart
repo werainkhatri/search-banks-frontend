@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:search_banks/widgets/bank_branch_row.dart';
+
+import '../widgets/bank_branch_row.dart';
 
 class BankBranchModel {
   final String ifsc;
@@ -39,7 +40,6 @@ class BankBranchModel {
   }
 
   TableRow getTableRow() {
-    // TODO Add star to display state of favourite
     List<String> entries = [
       ifsc,
       bankId.toString(),

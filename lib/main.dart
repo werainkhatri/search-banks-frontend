@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:search_banks/core/utils/service_locator.dart';
+import 'core/utils/service_locator.dart';
 import 'screens/cubit/bank_branches_cubit.dart';
 import 'screens/home.dart';
 
@@ -17,10 +17,11 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider(create: (context) => FavouriteBranches()),
+        Provider(create: (context) => FavouriteBranchesManager()),
         BlocProvider<BankBranchesCubit>(create: (_) => BankBranchesCubit()),
       ],
       child: MaterialApp(
+        theme: ThemeData(primarySwatch: Colors.grey),
         title: 'Material App',
         home: HomeScreen(),
       ),

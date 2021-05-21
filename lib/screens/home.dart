@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import '../core/constants.dart';
+import 'favourites.dart';
 
 import '../widgets/cities_dropdown.dart';
 import '../widgets/pagination_manager.dart';
@@ -50,26 +52,46 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Provider<int>(
-      create: (context) => 1,
-      child: Scaffold(
-        body: Scrollbar(
-          controller: _scrollController,
-          isAlwaysShown: true,
+    return Scaffold(
+      body: Scrollbar(
+        controller: _scrollController,
+        isAlwaysShown: true,
+        child: Center(
           child: ListView(
             controller: _scrollController,
+            shrinkWrap: true,
             children: [
               SizedBox(height: 40),
               Row(
                 children: [
                   Expanded(child: Container()),
                   Expanded(
-                    flex: 17,
+                    flex: 10,
                     child: Text(
                       'Bank Branches',
                       style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
                     ),
                   ),
+                  Flexible(
+                    flex: 6,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      alignment: Alignment.centerRight,
+                      child: ElevatedButton(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text('Favourites', style: TextStyle(fontSize: 20)),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => FavouritesScreen()),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  Expanded(child: Container()),
                 ],
               ),
               SizedBox(height: 20),
@@ -158,7 +180,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             assert(state is BankBranchesError);
                             return Center(
                               child: Text(
-                                'No Internet Connection. Try again later\nDescription: ${(state as BankBranchesError).description}',
+                                C.internetErrorMessage +
+                                    '\nDescription: ${(state as BankBranchesError).description}',
                               ),
                             );
                           }

@@ -4,24 +4,24 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/constants.dart';
 
-class FavouriteBranches {
+class FavouriteBranchesManager {
   /// List of bank branches made favourite by the user
   /// the list is kept sorted at each insertion to speed up search
   late List<String> favouriteBranches;
-  late SharedPreferences preferences;
+  late SharedPreferences _preferences;
 
-  FavouriteBranches() {
-    preferences = GetIt.I.get<SharedPreferences>();
+  FavouriteBranchesManager() {
+    _preferences = GetIt.I.get<SharedPreferences>();
     _init();
   }
 
   void _init() {
-    List<String>? favourites = preferences.getStringList(C.favoutiveSP);
+    List<String>? favourites = _preferences.getStringList(C.favoutiveSP);
     if (favourites != null) {
       favouriteBranches = favourites;
     } else {
       favouriteBranches = [];
-      preferences.setStringList(C.favoutiveSP, favouriteBranches);
+      _preferences.setStringList(C.favoutiveSP, favouriteBranches);
     }
   }
 
@@ -33,6 +33,6 @@ class FavouriteBranches {
       favouriteBranches.removeAt(index);
     }
     favouriteBranches.sort();
-    preferences.setStringList(C.favoutiveSP, favouriteBranches);
+    _preferences.setStringList(C.favoutiveSP, favouriteBranches);
   }
 }
