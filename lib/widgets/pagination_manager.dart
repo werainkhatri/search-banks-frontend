@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../screens/cubit/bank_branches_cubit.dart';
 
 class PaginationManager extends StatefulWidget {
-  final Function(int pageNumber) listener;
+  final void Function(int pageNumber) listener;
   final TextEditingController pageNumberController;
 
   const PaginationManager(this.listener, this.pageNumberController);
@@ -17,6 +17,7 @@ class _PaginationManagerState extends State<PaginationManager> {
   late final TextEditingController _pageNoController;
   late final FocusNode _focusNode;
   int totalPageCount = 1;
+  int currentPageNumber = 1;
 
   @override
   void initState() {
@@ -37,8 +38,17 @@ class _PaginationManagerState extends State<PaginationManager> {
             Expanded(
               child: IconButton(
                 icon: Icon(Icons.chevron_left_rounded),
-                onPressed: (toInt(_pageNoController.text) ?? 0) > 1
-                    ? () => updatePageNumber(toInt(_pageNoController.text)! - 1)
+                onPressed: currentPageNumber > 1
+                    ? () {
+                        setState(() {
+                          currentPageNumber--;
+                        });
+                        _pageNoController.text = currentPageNumber.toString();
+                        Future.delayed(Duration(milliseconds: 500), () => currentPageNumber)
+                            .then((value) {
+                          if (value == currentPageNumber) widget.listener(currentPageNumber);
+                        });
+                      }
                     : null,
               ),
             ),
@@ -49,7 +59,13 @@ class _PaginationManagerState extends State<PaginationManager> {
                 onSubmitted: (newValue) {
                   int? newPageNumber = toInt(newValue);
                   if (newPageNumber != null) {
-                    updatePageNumber(newPageNumber);
+                    currentPageNumber = newPageNumber;
+                    Future.delayed(Duration(milliseconds: 100), () => currentPageNumber)
+                        .then((value) {
+                      if (value == currentPageNumber) widget.listener(currentPageNumber);
+                    });
+                  } else {
+                    _pageNoController.text = currentPageNumber.toString();
                   }
                 },
                 decoration: InputDecoration(border: OutlineInputBorder()),
@@ -68,8 +84,17 @@ class _PaginationManagerState extends State<PaginationManager> {
             Expanded(
               child: IconButton(
                 icon: Icon(Icons.chevron_right_rounded),
-                onPressed: (toInt(_pageNoController.text) ?? totalPageCount + 1) < totalPageCount
-                    ? () => updatePageNumber(toInt(_pageNoController.text)! + 1)
+                onPressed: currentPageNumber < totalPageCount
+                    ? () {
+                        setState(() {
+                          currentPageNumber++;
+                        });
+                        _pageNoController.text = currentPageNumber.toString();
+                        Future.delayed(Duration(milliseconds: 100), () => currentPageNumber)
+                            .then((value) {
+                          if (value == currentPageNumber) widget.listener(currentPageNumber);
+                        });
+                      }
                     : null,
               ),
             ),
@@ -82,9 +107,4 @@ class _PaginationManagerState extends State<PaginationManager> {
   int? toInt(String value) => (value.isNotEmpty && int.tryParse(value) != null)
       ? int.parse(value).clamp(1, totalPageCount).toInt()
       : null;
-
-  void updatePageNumber(int newPageNumber) {
-    _pageNoController.text = (newPageNumber).toString();
-    widget.listener(newPageNumber);
-  }
 }
