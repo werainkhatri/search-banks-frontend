@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:search_banks/core/utils/service_locator.dart';
 import 'screens/cubit/bank_branches_cubit.dart';
 import 'screens/home.dart';
 
-import 'models/banks_list.dart';
+import 'models/favourite_branches.dart';
 
-void main() => runApp(App());
+void main() async {
+  await setup();
+  runApp(App());
+}
 
 class App extends StatelessWidget {
   @override

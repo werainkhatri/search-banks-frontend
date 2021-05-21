@@ -6,4 +6,6 @@ class C {
 
   static String autocompleteApiUrl(String query, int limit, int offset) =>
       apiUrl + 'branches/autocomplete/?q=$query&limit=$limit&offset=$offset';
+
+  static String favoutiveSP = 'favourite_bank_branches';
 }

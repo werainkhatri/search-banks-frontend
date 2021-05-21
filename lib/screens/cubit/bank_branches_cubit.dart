@@ -36,17 +36,18 @@ class BankBranchesCubit extends Cubit<BankBranchesState> {
       } else {
         // TODO test for favourite. Add a parameter to get the set of favourites.
         dynamic decodedResponse = jsonDecode(response.body);
-        List<TableRow> branchesToDisplay = decodedResponse['result']
-            .map<TableRow>((json) => BankBranchModel.fromJson(json).getTableRow())
+        List<BankBranchModel> responseBranches = decodedResponse['result']
+            .map<BankBranchModel>((json) => BankBranchModel.fromJson(json))
+            .toList();
+        List<TableRow> branchesToDisplay = responseBranches
+            .map<TableRow>((branch) => branch.getTableRow())
             .toList()
               ..insert(0, BankBranchModel.getHeadings());
-        emit(BankBranchesLoaded(branchesToDisplay, decodedResponse['total_page_count']));
+        emit(BankBranchesLoaded(
+            branchesToDisplay, decodedResponse['total_page_count'], responseBranches));
       }
     } catch (e) {
       Log.e(tag: 'BankBranchesCubit', message: 'Exception while calling /api/branches/ api : $e');
     }
   }
-
-  // TODO
-  void addFavourite() {}
 }

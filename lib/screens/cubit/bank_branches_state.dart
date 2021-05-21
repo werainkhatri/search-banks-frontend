@@ -8,9 +8,10 @@ class BankBranchesLoading extends BankBranchesState {}
 
 class BankBranchesLoaded extends BankBranchesState {
   final List<TableRow> tableRows;
+  final List<BankBranchModel> responseBranches;
   final int totalPageCount;
 
-  BankBranchesLoaded(this.tableRows, this.totalPageCount);
+  BankBranchesLoaded(this.tableRows, this.totalPageCount, this.responseBranches);
 }
 
 class BankBranchesError extends BankBranchesState {

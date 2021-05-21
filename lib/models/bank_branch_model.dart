@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:search_banks/widgets/bank_branch_row.dart';
 
 class BankBranchModel {
   final String ifsc;
@@ -48,14 +49,13 @@ class BankBranchModel {
       city,
       distict,
       state,
-      favourite.toString(),
     ];
-    return TableRow(
-      children: entries
-          .map((e) =>
-              Center(child: Padding(padding: const EdgeInsets.all(8), child: SelectableText(e))))
-          .toList(),
-    );
+    List<Widget> cellsInRow = entries
+        .map<Widget>((e) =>
+            Center(child: Padding(padding: const EdgeInsets.all(8), child: SelectableText(e))))
+        .toList();
+    cellsInRow.insert(cellsInRow.length, BankBranchFavourite(ifsc));
+    return TableRow(children: cellsInRow);
   }
 
   static TableRow getHeadings() {
