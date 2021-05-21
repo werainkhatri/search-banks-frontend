@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/favourite_branches.dart';
+import '../models/data_manager.dart';
 
 class BankBranchFavourite extends StatefulWidget {
   final String bankIfscCode;
@@ -15,7 +15,7 @@ class BankBranchFavourite extends StatefulWidget {
 class _BankBranchFavouriteState extends State<BankBranchFavourite> {
   @override
   Widget build(BuildContext context) {
-    FavouriteBranchesManager _favBranches = Provider.of<FavouriteBranchesManager>(context);
+    DataManager _favBranches = Provider.of<DataManager>(context);
     bool isFavourite = binarySearch(_favBranches.favouriteBranches, widget.bankIfscCode) != -1;
     return Center(
       child: Padding(

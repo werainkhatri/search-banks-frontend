@@ -1,17 +1,22 @@
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
+import 'package:quiver/cache.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/constants.dart';
+import 'api_response.dart';
 
-class FavouriteBranchesManager with ChangeNotifier {
+class DataManager with ChangeNotifier {
   /// List of bank branches made favourite by the user
   /// the list is kept sorted at each insertion to speed up search
   late List<String> favouriteBranches;
+  // LinkedList<>
+  late MapCache<String, APIResponse> cache;
   late SharedPreferences _preferences;
 
-  FavouriteBranchesManager() {
+  DataManager() {
     _preferences = GetIt.I.get<SharedPreferences>();
+    cache = MapCache.lru();
     _init();
   }
 

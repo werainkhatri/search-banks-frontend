@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import '../core/constants.dart';
-import 'favourites.dart';
 
+import '../core/constants.dart';
 import '../widgets/cities_dropdown.dart';
 import '../widgets/pagination_manager.dart';
 import 'cubit/bank_branches_cubit.dart';
+import 'favourites.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (_lastQuery == _current) return;
 
       // wait for a certain amount of time and get api results only if the query remains the same
-      Future.delayed(Duration(milliseconds: 200), () => _current).then((value) {
+      Future.delayed(Duration(milliseconds: 400), () => _current).then((value) {
         if (value == _searchController.text.trim() && _lastQuery != value) {
           _lastQuery = value;
           getLatestData();
@@ -197,6 +197,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void getLatestData() {
-    context.read<BankBranchesCubit>().search(_searchController.text, rowsPerPage, pageNumber);
+    context.read<BankBranchesCubit>().search(
+          _searchController.text,
+          rowsPerPage,
+          pageNumber,
+          context,
+        );
   }
 }

@@ -3,22 +3,42 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:quiver/cache.dart';
 
 import '../../core/constants.dart';
 import '../../core/utils/logger.dart';
-import '../../models/bank_branch_model.dart';
+import '../../models/api_response.dart';
+import '../../models/bank_branch.dart';
+import '../../models/data_manager.dart';
 
 part 'bank_branches_state.dart';
 
 class BankBranchesCubit extends Cubit<BankBranchesState> {
   BankBranchesCubit() : super(BankBranchesInitial());
 
-  Future<void> search(String query, int limit, int pageNumber) async {
+  Future<void> search(String query, int limit, int pageNumber, BuildContext context) async {
     if (query.isEmpty) {
       emit(BankBranchesInitial());
       return;
     }
     int offset = (pageNumber - 1) * limit;
+    MapCache<String, APIResponse> cache = Provider.of<DataManager>(context, listen: false).cache;
+
+    String cacheKey = query.trim() + ' ' + limit.toString() + ' ' + offset.toString();
+    APIResponse? response = await cache.get(cacheKey);
+    if (response != null) {
+      List<TableRow> branchesToDisplay = response.responseBranches
+          .map<TableRow>((branch) => branch.getTableRow())
+          .toList()
+            ..insert(0, BankBranchModel.getHeadings());
+      emit(BankBranchesLoaded(
+        branchesToDisplay,
+        response.totalPageCount,
+        response.responseBranches,
+      ));
+      return;
+    }
 
     try {
       http.Response response = await http.get(Uri.http(C.apiUrl, C.branchesApiEndpoint, {
@@ -37,6 +57,8 @@ class BankBranchesCubit extends Cubit<BankBranchesState> {
         List<BankBranchModel> responseBranches = decodedResponse['result']
             .map<BankBranchModel>((json) => BankBranchModel.fromJson(json))
             .toList();
+
+        cache.set(cacheKey, APIResponse(responseBranches, decodedResponse['total_page_count']));
 
         List<TableRow> branchesToDisplay = responseBranches
             .map<TableRow>((branch) => branch.getTableRow())

@@ -5,8 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import '../core/constants.dart';
-import '../models/bank_branch_model.dart';
-import '../models/favourite_branches.dart';
+import '../models/bank_branch.dart';
+import '../models/data_manager.dart';
 
 class FavouritesScreen extends StatefulWidget {
   const FavouritesScreen();
@@ -16,13 +16,13 @@ class FavouritesScreen extends StatefulWidget {
 }
 
 class _FavouritesScreenState extends State<FavouritesScreen> {
-  late final FavouriteBranchesManager manager;
+  late final DataManager manager;
   List<TableRow>? rows;
 
   @override
   void initState() {
     super.initState();
-    manager = Provider.of<FavouriteBranchesManager>(context, listen: false);
+    manager = Provider.of<DataManager>(context, listen: false);
     getData();
   }
 
