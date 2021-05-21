@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+
 import '../core/constants.dart';
-import '../core/utils/logger.dart';
 import '../models/bank_branch_model.dart';
 import '../models/favourite_branches.dart';
-import 'package:http/http.dart' as http;
 
 class FavouritesScreen extends StatefulWidget {
   const FavouritesScreen();
@@ -36,15 +36,18 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
         await http.get(Uri.http(C.apiUrl, C.ifscApiEndpoint, {'q': favouriteQuery}));
     rows = [];
     if (response.statusCode == 200) {
-      rows = jsonDecode(response.body)
-          .map<TableRow>((map) => BankBranchModel.fromJson(map, true).getTableRow())
-          .toList();
+      List<BankBranchModel> favourites = (jsonDecode(response.body) as List<dynamic>)
+          .map<BankBranchModel>((map) => BankBranchModel.fromJson(map))
+          .toList()
+            ..sort((one, other) => one.ifsc.compareTo(other.ifsc));
+      rows = favourites.map((e) => e.getTableRow()).toList();
     }
     if (mounted) setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    ScrollController _controller = ScrollController();
     Widget child;
     if (manager.favouriteBranches.length == 0) {
       child = Center(
@@ -58,7 +61,8 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
       child = Center(child: Text(C.internetErrorMessage));
     } else {
       rows!.insert(0, BankBranchModel.getHeadings());
-      child = SingleChildScrollView(
+      child = Padding(
+        padding: const EdgeInsets.symmetric(vertical: 40.0),
         child: Table(
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           border: TableBorder.all(),
@@ -76,13 +80,20 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
           elevation: 0,
           title: Text('Favourites'),
         ),
-        body: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: Container()),
-            Expanded(flex: 16, child: child),
-            Expanded(child: Container()),
-          ],
+        body: Scrollbar(
+          controller: _controller,
+          isAlwaysShown: true,
+          child: SingleChildScrollView(
+            controller: _controller,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: Container()),
+                Expanded(flex: 16, child: child),
+                Expanded(child: Container()),
+              ],
+            ),
+          ),
         ),
       ),
     );

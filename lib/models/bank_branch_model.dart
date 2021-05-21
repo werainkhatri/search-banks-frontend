@@ -11,7 +11,6 @@ class BankBranchModel {
   final String city;
   final String distict;
   final String state;
-  bool favourite;
 
   BankBranchModel({
     required this.ifsc,
@@ -22,10 +21,9 @@ class BankBranchModel {
     required this.city,
     required this.distict,
     required this.state,
-    required this.favourite,
   });
 
-  factory BankBranchModel.fromJson(Map<String, dynamic> json, [bool isFavourite = false]) {
+  factory BankBranchModel.fromJson(Map<String, dynamic> json) {
     return BankBranchModel(
       ifsc: json['ifsc'] as String,
       bankId: json['bank_id'] as int,
@@ -35,7 +33,6 @@ class BankBranchModel {
       city: json['city'] as String,
       distict: json['district'] as String,
       state: json['state'] as String,
-      favourite: isFavourite,
     );
   }
 

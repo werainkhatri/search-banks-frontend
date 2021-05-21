@@ -33,20 +33,23 @@ class BankBranchesCubit extends Cubit<BankBranchesState> {
             message: 'Error while fetching details: Code ${response.statusCode}');
         emit(BankBranchesError('Something went wrong. Please try again later'));
       } else {
-        // TODO test for favourite. Add a parameter to get the set of favourites.
         dynamic decodedResponse = jsonDecode(response.body);
         List<BankBranchModel> responseBranches = decodedResponse['result']
             .map<BankBranchModel>((json) => BankBranchModel.fromJson(json))
             .toList();
+
         List<TableRow> branchesToDisplay = responseBranches
             .map<TableRow>((branch) => branch.getTableRow())
             .toList()
               ..insert(0, BankBranchModel.getHeadings());
+
         emit(BankBranchesLoaded(
-            branchesToDisplay, decodedResponse['total_page_count'], responseBranches));
+          branchesToDisplay,
+          decodedResponse['total_page_count'],
+          responseBranches,
+        ));
       }
     } catch (e) {
-      // Log.e(tag: 'BankBranchesCubit', message: 'Exception while calling /api/branches/ api : $e');
       emit(BankBranchesError(e.toString()));
     }
   }

@@ -56,10 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Scrollbar(
         controller: _scrollController,
         isAlwaysShown: true,
-        child: Center(
-          child: ListView(
-            controller: _scrollController,
-            shrinkWrap: true,
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          child: Column(
             children: [
               SizedBox(height: 40),
               Row(
@@ -127,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           });
                           getLatestData();
                         },
-                        items: [10, 20, 30, 40, 50, 100]
+                        items: [10, 20, 30, 40, 50]
                             .map<DropdownMenuItem<int>>(
                               (e) => DropdownMenuItem(value: e, child: Center(child: Text('$e'))),
                             )
@@ -157,10 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: DefaultTextStyle(
                       style: TextStyle(),
                       textAlign: TextAlign.center,
-                      child: BlocConsumer<BankBranchesCubit, BankBranchesState>(
-                        listener: (context, state) {
-                          // TODO: implement listener
-                        },
+                      child: BlocBuilder<BankBranchesCubit, BankBranchesState>(
                         builder: (context, state) {
                           if (state is BankBranchesInitial) {
                             return Center(

@@ -17,12 +17,12 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider(create: (context) => FavouriteBranchesManager()),
+        ChangeNotifierProvider(create: (context) => FavouriteBranchesManager()),
         BlocProvider<BankBranchesCubit>(create: (_) => BankBranchesCubit()),
       ],
       child: MaterialApp(
         theme: ThemeData(primarySwatch: Colors.grey),
-        title: 'Material App',
+        title: 'Bank Branches',
         home: HomeScreen(),
       ),
     );

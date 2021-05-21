@@ -15,8 +15,7 @@ class BankBranchFavourite extends StatefulWidget {
 class _BankBranchFavouriteState extends State<BankBranchFavourite> {
   @override
   Widget build(BuildContext context) {
-    FavouriteBranchesManager _favBranches =
-        Provider.of<FavouriteBranchesManager>(context, listen: false);
+    FavouriteBranchesManager _favBranches = Provider.of<FavouriteBranchesManager>(context);
     bool isFavourite = binarySearch(_favBranches.favouriteBranches, widget.bankIfscCode) != -1;
     return Center(
       child: Padding(
