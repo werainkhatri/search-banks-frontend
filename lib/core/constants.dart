@@ -1,5 +1,5 @@
 class C {
-  static const String apiUrl = 'localhost:8000';
+  static const String apiUrl = 'searchbankbranches.herokuapp.com';
 
   static const String banksApiEndpoint = '/api/banks/';
   static const String branchesApiEndpoint = '/api/branches/';
