@@ -3,19 +3,20 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 import '../core/constants.dart';
+import '../core/utils/app_routes.dart';
 import '../widgets/cities_dropdown.dart';
 import '../widgets/pagination_manager.dart';
 import 'cubit/bank_branches_cubit.dart';
-import 'favourites.dart';
 
-class HomeScreen extends StatefulWidget {
+class BranchesScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _BranchesScreenState createState() => _BranchesScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _BranchesScreenState extends State<BranchesScreen> {
   /// Controller for search bar
   late TextEditingController _searchController;
 
@@ -82,10 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Text('Favourites', style: TextStyle(fontSize: 20)),
                         ),
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => FavouritesScreen()),
-                          );
+                          context.vxNav.push(Uri.parse(AppRoutes.favouriteBranches));
                         },
                       ),
                     ),

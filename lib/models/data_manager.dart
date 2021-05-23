@@ -10,7 +10,6 @@ class DataManager with ChangeNotifier {
   /// List of bank branches made favourite by the user
   /// the list is kept sorted at each insertion to speed up search
   late List<String> favouriteBranches;
-  // LinkedList<>
   late MapCache<String, APIResponse> cache;
   late SharedPreferences _preferences;
 
