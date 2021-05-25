@@ -11,14 +11,16 @@ import '../widgets/cities_dropdown.dart';
 import '../widgets/pagination_manager.dart';
 import 'cubit/bank_branches_cubit.dart';
 
-class BranchesScreen extends StatefulWidget {
+class BankBranchesScreen extends StatefulWidget {
   @override
-  _BranchesScreenState createState() => _BranchesScreenState();
+  _BankBranchesScreenState createState() => _BankBranchesScreenState();
 }
 
-class _BranchesScreenState extends State<BranchesScreen> {
+class _BankBranchesScreenState extends State<BankBranchesScreen> {
   /// Controller for search bar
   late TextEditingController _searchController;
+
+  late TextEditingController _pageNumberController;
 
   /// Last processed query
   late String _lastQuery;
@@ -31,21 +33,22 @@ class _BranchesScreenState extends State<BranchesScreen> {
   void initState() {
     super.initState();
     _searchController = TextEditingController();
+    _pageNumberController = TextEditingController(text: '1');
     _lastQuery = '';
     rowsPerPage = 10;
     pageNumber = 1;
     _scrollController = ScrollController();
 
     _searchController.addListener(() {
-      String _current = _searchController.text.trim();
+      String _currentQuery = _searchController.text.trim();
       // if last query is same as the current query, skip
-      if (_lastQuery == _current) return;
+      if (_lastQuery == _currentQuery) return;
 
       // wait for a certain amount of time and get api results only if the query remains the same
-      Future.delayed(Duration(milliseconds: 400), () => _current).then((value) {
+      Future.delayed(Duration(milliseconds: 400), () => _currentQuery).then((value) {
         if (value == _searchController.text.trim() && _lastQuery != value) {
           _lastQuery = value;
-          getLatestData();
+          getLatestData(true);
         }
       });
     });
@@ -122,7 +125,7 @@ class _BranchesScreenState extends State<BranchesScreen> {
                           setState(() {
                             rowsPerPage = newValue!;
                           });
-                          getLatestData();
+                          getLatestData(false);
                         },
                         items: [10, 20, 30, 40, 50]
                             .map<DropdownMenuItem<int>>(
@@ -138,9 +141,9 @@ class _BranchesScreenState extends State<BranchesScreen> {
                       child: PaginationManager(
                         (int newPageNumber) {
                           pageNumber = newPageNumber;
-                          getLatestData();
+                          getLatestData(false);
                         },
-                        TextEditingController(text: '1'),
+                        _pageNumberController,
                       )),
                   Expanded(child: Container()),
                 ],
@@ -157,13 +160,12 @@ class _BranchesScreenState extends State<BranchesScreen> {
                       child: BlocBuilder<BankBranchesCubit, BankBranchesState>(
                         builder: (context, state) {
                           if (state is BankBranchesInitial) {
-                            return Center(
-                                child: Text('Enter a query to search for from the database'));
+                            return Center(child: Text(C.emptyQueryMessage));
                           } else if (state is BankBranchesLoading) {
                             return Center(child: CircularProgressIndicator());
                           } else if (state is BankBranchesLoaded) {
                             if (state.tableRows.length == 1) {
-                              return Center(child: Text('No records for the given query found'));
+                              return Center(child: Text(C.noResultsFoundMessage));
                             }
                             return Table(
                               defaultVerticalAlignment: TableCellVerticalAlignment.middle,
@@ -194,12 +196,14 @@ class _BranchesScreenState extends State<BranchesScreen> {
     );
   }
 
-  void getLatestData() {
-    context.read<BankBranchesCubit>().search(
+  void getLatestData(bool newSearch) async {
+    if (newSearch) pageNumber = 1;
+    await context.read<BankBranchesCubit>().search(
           _searchController.text,
           rowsPerPage,
           pageNumber,
           context,
         );
+    if (newSearch) _pageNumberController.text = '1';
   }
 }

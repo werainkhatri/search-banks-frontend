@@ -16,7 +16,7 @@ class PaginationManager extends StatefulWidget {
 class _PaginationManagerState extends State<PaginationManager> {
   late final TextEditingController _pageNoController;
   late final FocusNode _focusNode;
-  int totalPageCount = 1;
+  int totalPageCount = 0;
   int currentPageNumber = 1;
 
   @override
@@ -30,8 +30,12 @@ class _PaginationManagerState extends State<PaginationManager> {
   Widget build(BuildContext context) {
     return BlocBuilder<BankBranchesCubit, BankBranchesState>(
       builder: (context, state) {
-        if (state is BankBranchesLoaded && state.tableRows.length > 1) {
+        if (state is BankBranchesLoaded) {
           totalPageCount = state.totalPageCount;
+          currentPageNumber = int.parse(_pageNoController.text);
+        } else {
+          totalPageCount = 0;
+          currentPageNumber = 1;
         }
         return Row(
           children: [

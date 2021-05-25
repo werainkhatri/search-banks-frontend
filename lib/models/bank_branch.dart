@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/bank_branch_row.dart';
+import '../widgets/details_redirect_column.dart';
+import '../widgets/toggle_favourites_column.dart';
 
 class BankBranchModel {
   final String ifsc;
@@ -51,7 +52,8 @@ class BankBranchModel {
         .map<Widget>((e) =>
             Center(child: Padding(padding: const EdgeInsets.all(8), child: SelectableText(e))))
         .toList();
-    cellsInRow.insert(cellsInRow.length, BankBranchFavourite(ifsc));
+    cellsInRow.insert(cellsInRow.length, ToggleFavouritesColumn(ifsc));
+    cellsInRow.insert(cellsInRow.length, DetailsRedirectColumn(this));
     return TableRow(children: cellsInRow);
   }
 
@@ -66,6 +68,7 @@ class BankBranchModel {
       'Distict',
       'State',
       'Favourite',
+      'Details',
     ];
     return TableRow(
       children: entries

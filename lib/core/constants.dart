@@ -5,6 +5,10 @@ class C {
   static const String branchesApiEndpoint = '/api/branches/';
   static const String ifscApiEndpoint = '/api/ifsc/';
 
+  static const String emptyQueryMessage = 'Enter a query to search for from the database';
+
+  static const String noResultsFoundMessage = 'No records for the given query found';
+
   static String autocompleteApiUrl(String query, int limit, int offset) =>
       apiUrl + 'branches/autocomplete/?q=$query&limit=$limit&offset=$offset';
 
