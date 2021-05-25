@@ -28,8 +28,8 @@ class BankBranchesCubit extends Cubit<BankBranchesState> {
     String cacheKey = query.trim() + ' ' + limit.toString() + ' ' + offset.toString();
     APIResponse? response = await cache.get(cacheKey);
     if (response != null) {
-      List<TableRow> branchesToDisplay = response.responseBranches
-          .map<TableRow>((branch) => branch.getTableRow())
+      List<List<Widget>> branchesToDisplay = response.responseBranches
+          .map<List<Widget>>((branch) => branch.getRowWidgets())
           .toList()
             ..insert(0, BankBranchModel.getHeadings());
       emit(BankBranchesLoaded(
@@ -60,8 +60,8 @@ class BankBranchesCubit extends Cubit<BankBranchesState> {
 
         cache.set(cacheKey, APIResponse(responseBranches, decodedResponse['total_page_count']));
 
-        List<TableRow> branchesToDisplay = responseBranches
-            .map<TableRow>((branch) => branch.getTableRow())
+        List<List<Widget>> branchesToDisplay = responseBranches
+            .map<List<Widget>>((branch) => branch.getRowWidgets())
             .toList()
               ..insert(0, BankBranchModel.getHeadings());
 

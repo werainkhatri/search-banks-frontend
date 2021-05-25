@@ -7,7 +7,7 @@ class BankBranchesInitial extends BankBranchesState {}
 class BankBranchesLoading extends BankBranchesState {}
 
 class BankBranchesLoaded extends BankBranchesState {
-  final List<TableRow> tableRows;
+  final List<List<Widget>> tableRows;
   final List<BankBranchModel> responseBranches;
   final int totalPageCount;
 

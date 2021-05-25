@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:search_banks/models/bank_branch.dart';
 import 'package:velocity_x/velocity_x.dart';
+
 import '../core/utils/app_routes.dart';
+import '../models/bank_branch.dart';
 
 class DetailsRedirectColumn extends StatelessWidget {
   final BankBranchModel model;

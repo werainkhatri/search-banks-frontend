@@ -37,7 +37,7 @@ class BankBranchModel {
     );
   }
 
-  TableRow getTableRow() {
+  List<Widget> getRowWidgets() {
     List<String> entries = [
       ifsc,
       bankId.toString(),
@@ -54,10 +54,10 @@ class BankBranchModel {
         .toList();
     cellsInRow.insert(cellsInRow.length, ToggleFavouritesColumn(ifsc));
     cellsInRow.insert(cellsInRow.length, DetailsRedirectColumn(this));
-    return TableRow(children: cellsInRow);
+    return cellsInRow;
   }
 
-  static TableRow getHeadings() {
+  static List<Widget> getHeadings() {
     final List<String> entries = [
       'IFSC',
       'Bank Id',
@@ -70,18 +70,17 @@ class BankBranchModel {
       'Favourite',
       'Details',
     ];
-    return TableRow(
-      children: entries
-          .map(
-            (e) => Center(
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child:
-                    SelectableText(e, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-              ),
+    return entries
+        .map(
+          (e) => Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: SelectableText(e, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             ),
-          )
-          .toList(),
-    );
+          ),
+        )
+        .toList();
   }
+
+  static int get columnLength => 10;
 }

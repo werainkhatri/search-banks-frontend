@@ -40,7 +40,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
           .map<BankBranchModel>((map) => BankBranchModel.fromJson(map))
           .toList()
             ..sort((one, other) => one.ifsc.compareTo(other.ifsc));
-      rows = favourites.map((e) => e.getTableRow()).toList();
+      rows = favourites.map((e) => TableRow(children: e.getRowWidgets())).toList();
     }
     if (mounted) setState(() {});
   }
@@ -60,7 +60,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
     } else if (rows!.isEmpty) {
       child = Center(child: Text(C.internetErrorMessage));
     } else {
-      rows!.insert(0, BankBranchModel.getHeadings());
+      rows!.insert(0, TableRow(children: BankBranchModel.getHeadings()));
       child = Padding(
         padding: const EdgeInsets.symmetric(vertical: 40.0),
         child: Table(
