@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   /// Last processed query
   late String _lastQuery;
 
-  late int rowsPerPage, pageNumber;
+  late int rowsPerPage, pageNumber, numberOfRequestsMade;
 
   late ScrollController _scrollController;
 
@@ -38,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _lastQuery = '';
     rowsPerPage = 10;
     pageNumber = 1;
+    numberOfRequestsMade = 0;
     _scrollController = ScrollController();
 
     _searchController.addListener(() {
@@ -95,8 +96,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       flex: 10,
                       child: TextField(
                         controller: _searchController,
-                        decoration:
-                            InputDecoration(border: OutlineInputBorder(), hintText: 'Search'),
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'Search',
+                          suffixIcon: Padding(
+                            padding: const EdgeInsets.only(right: 10.0),
+                            child: CircularProgressIndicator(
+                                value: numberOfRequestsMade > 0 ? null : 0),
+                          ),
+                          suffixIconConstraints: BoxConstraints(maxHeight: 25, maxWidth: 35),
+                        ),
                       ),
                     ),
                     Expanded(flex: 4, child: Container()),
@@ -262,6 +271,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void getLatestData(bool newSearch) async {
+    if (numberOfRequestsMade == 0) setState(() {});
+    numberOfRequestsMade++;
     if (newSearch) pageNumber = 1;
     await context.read<BankBranchesCubit>().search(
           _searchController.text,
@@ -270,5 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
           context,
         );
     if (newSearch) _pageNumberController.text = '1';
+    numberOfRequestsMade--;
+    if (numberOfRequestsMade == 0) setState(() {});
   }
 }
