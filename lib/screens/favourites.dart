@@ -27,6 +27,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
   }
 
   Future<void> getData() async {
+    rows!.add(BankBranchModel.getHeadings());
     if (manager.favouriteBranches.isEmpty) return;
     String favouriteQuery = manager.favouriteBranches[0];
     for (int i = 1; i < manager.favouriteBranches.length; i++) {
@@ -61,7 +62,6 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
     } else if (rows!.isEmpty) {
       child = Center(child: Text(C.internetErrorMessage));
     } else {
-      rows!.insert(0, BankBranchModel.getHeadings());
       List<TableRow> tableRows = [];
       rows!.forEach((List<Widget> e) {
         List<Widget> columnsToDisplay = [];
