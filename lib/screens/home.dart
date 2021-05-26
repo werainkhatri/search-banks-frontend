@@ -228,7 +228,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               if (state.tableRows.length == 1) {
                                 return Center(child: Text(C.noResultsFoundMessage));
                               }
-                              // int colsToRemove = 0;
                               List<TableRow> tableRows = [];
                               state.tableRows.forEach((e) {
                                 List<Widget> columnsToDisplay = [];

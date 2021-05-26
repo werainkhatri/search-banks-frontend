@@ -17,7 +17,7 @@ class FavouritesScreen extends StatefulWidget {
 
 class _FavouritesScreenState extends State<FavouritesScreen> {
   late final DataManager manager;
-  List<TableRow>? rows;
+  List<List<Widget>>? rows;
 
   @override
   void initState() {
@@ -40,13 +40,14 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
           .map<BankBranchModel>((map) => BankBranchModel.fromJson(map))
           .toList()
             ..sort((one, other) => one.ifsc.compareTo(other.ifsc));
-      rows = favourites.map((e) => TableRow(children: e.getRowWidgets())).toList();
+      rows = favourites.map((e) => e.getRowWidgets()).toList();
     }
     if (mounted) setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     ScrollController _controller = ScrollController();
     Widget child;
     if (manager.favouriteBranches.length == 0) {
@@ -60,13 +61,25 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
     } else if (rows!.isEmpty) {
       child = Center(child: Text(C.internetErrorMessage));
     } else {
-      rows!.insert(0, TableRow(children: BankBranchModel.getHeadings()));
+      rows!.insert(0, BankBranchModel.getHeadings());
+      List<TableRow> tableRows = [];
+      rows!.forEach((List<Widget> e) {
+        List<Widget> columnsToDisplay = [];
+        for (int i = 0; i < e.length; i++) {
+          Widget element = e[i];
+          if ((width > 1500 || i != 4) &&
+              (width > 1200 || i != 5) &&
+              (width > 1000 || i != 6) &&
+              (width > 800 || i != 7)) columnsToDisplay.add(element);
+        }
+        tableRows.add(TableRow(children: columnsToDisplay));
+      });
       child = Padding(
         padding: const EdgeInsets.symmetric(vertical: 40.0),
         child: Table(
           defaultVerticalAlignment: TableCellVerticalAlignment.middle,
           border: TableBorder.all(),
-          children: rows!,
+          children: tableRows,
         ),
       );
     }
